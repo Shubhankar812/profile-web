@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shubhankar Pande — Software Engineer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #070b14;
+      --bg2:       #0b1120;
+      --surface:   rgba(255,255,255,0.035);
+      --border:    rgba(255,255,255,0.07);
+      --border-h:  rgba(99,179,255,0.25);
+      --neon:      #63b3ff;
+      --neon-dim:  rgba(99,179,255,0.12);
+      --accent:    #a78bfa;
+      --accent-dim:rgba(167,139,250,0.12);
+      --text:      #cbd5e1;
+      --text-h:    #f1f5f9;
+      --muted:     #4b5e7a;
+      --glow:      rgba(99,179,255,0.18);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* ── GRAIN OVERLAY ── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.5;
+    }
+
+    /* ── AMBIENT ORBS ── */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(100px);
+    }
+    .orb1 { width: 480px; height: 480px; background: rgba(99,179,255,0.07); top: -160px; left: -120px; }
+    .orb2 { width: 360px; height: 360px; background: rgba(167,139,250,0.07); bottom: 5%; right: -100px; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 3rem;
+      height: 60px;
+      background: rgba(7,11,20,0.75);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.82rem;
+      color: var(--neon);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+    }
+
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      font-family: 'Space Mono', monospace;
+      transition: color 0.25s;
+    }
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--text-h); }
+
+    .nav-cta {
+      display: inline-block;
+      padding: 0.45rem 1.2rem;
+      border: 1px solid var(--border-h);
+      border-radius: 6px;
+      color: var(--neon);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      transition: all 0.25s;
+    }
+    .nav-cta:hover {
+      background: var(--neon-dim);
+      box-shadow: 0 0 18px rgba(99,179,255,0.15);
+    }
+
+    /* ── SECTIONS ── */
+    main { position: relative; z-index: 2; }
+
+    section {
+      padding: 6rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 80px;
+      gap: 0;
+    }
+
+    .hero-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--neon-dim);
+      border: 1px solid rgba(99,179,255,0.2);
+      border-radius: 20px;
+      padding: 0.3rem 0.9rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--neon);
+      letter-spacing: 0.1em;
+      width: fit-content;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.1s forwards;
+    }
+
+    .hero-chip::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--neon);
+      border-radius: 50%;
+      box-shadow: 0 0 6px var(--neon);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .hero-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(3.2rem, 8vw, 6.5rem);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      color: var(--text-h);
+      margin-bottom: 0.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.25s forwards;
+    }
+
+    .hero-name .grad {
+      background: linear-gradient(120deg, var(--neon) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-role {
+      font-size: 1.1rem;
+      color: var(--muted);
+      font-weight: 400;
+      margin-bottom: 1.6rem;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.38s forwards;
+    }
+
+    .hero-desc {
+      max-width: 500px;
+      font-size: 0.97rem;
+      color: #64748b;
+      line-height: 1.85;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.5s forwards;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 0.85rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.62s forwards;
+    }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: var(--neon);
+      color: #060a12;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 0.7rem 1.6rem;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.25s;
+      box-shadow: 0 0 20px rgba(99,179,255,0.2);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 28px rgba(99,179,255,0.35);
+    }
+
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: transparent;
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.06em;
+      padding: 0.7rem 1.6rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      text-decoration: none;
+      transition: all 0.25s;
+    }
+    .btn-ghost:hover {
+      border-color: var(--border-h);
+      background: var(--neon-dim);
+      color: var(--text-h);
+      transform: translateY(-2px);
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 2.5rem;
+      margin-top: 4rem;
+      padding-top: 2.5rem;
+      border-top: 1px solid var(--border);
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.75s forwards;
+    }
+
+    .h-stat-val {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: var(--text-h);
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+
+    .h-stat-label {
+      font-size: 0.72rem;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── SECTION HEADER ── */
+    .sec-header { margin-bottom: 3rem; }
+
+    .sec-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--neon);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    .sec-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 700;
+      color: var(--text-h);
+      letter-spacing: -0.02em;
+    }
+
+    /* ── CARD BASE ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      backdrop-filter: blur(16px);
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    }
+
+    .card:hover {
+      border-color: var(--border-h);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.35), 0 0 0 1px rgba(99,179,255,0.04);
+      transform: translateY(-3px);
+    }
+
+    /* ── ABOUT ── */
+    #about { padding-top: 2rem; }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 2rem;
+    }
+
+    .about-card {
+      padding: 2.2rem;
+    }
+
+    .about-card p {
+      font-size: 0.95rem;
+      color: #64748b;
+      line-height: 1.85;
+      margin-bottom: 1rem;
+    }
+    .about-card p:last-child { margin-bottom: 0; }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .stat-cell {
+      background: var(--surface);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      transition: background 0.25s;
+      backdrop-filter: blur(16px);
+    }
+    .stat-cell:hover { background: rgba(99,179,255,0.05); }
+
+    .stat-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--text-h);
+      line-height: 1;
+    }
+
+    .stat-lbl {
+      font-size: 0.72rem;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── EXPERIENCE ── */
+    .exp-card {
+      padding: 2rem 2.2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .exp-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(to bottom, var(--neon), var(--accent));
+      border-radius: 3px 0 0 3px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .exp-card:hover::before { opacity: 1; }
+
+    .exp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.3rem;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .exp-role {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-h);
+    }
+
+    .exp-badge {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--neon);
+      background: var(--neon-dim);
+      border: 1px solid rgba(99,179,255,0.18);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+
+    .exp-company {
+      font-size: 0.82rem;
+      color: var(--accent);
+      font-family: 'Space Mono', monospace;
+      margin-bottom: 1.4rem;
+      letter-spacing: 0.04em;
+    }
+
+    .exp-points { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+
+    .exp-points li {
+      font-size: 0.88rem;
+      color: #64748b;
+      line-height: 1.7;
+      padding-left: 1.2rem;
+      position: relative;
+    }
+    .exp-points li::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0.55em;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--neon);
+      opacity: 0.5;
+    }
+
+    /* ── PROJECTS ── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .project-card {
+      padding: 1.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(400px circle at var(--mx,50%) var(--my,50%), rgba(99,179,255,0.045), transparent 60%);
+      pointer-events: none;
+    }
+
+    .proj-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .proj-icon {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      background: var(--neon-dim);
+      border: 1px solid rgba(99,179,255,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .proj-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      padding-top: 0.3rem;
+    }
+
+    .proj-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-h);
+      margin-bottom: 0.6rem;
+    }
+
+    .proj-desc {
+      font-size: 0.85rem;
+      color: #64748b;
+      line-height: 1.75;
+      margin-bottom: 1.4rem;
+      flex: 1;
+    }
+
+    .proj-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.4rem; }
+
+    .tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      padding: 0.22rem 0.65rem;
+      border-radius: 4px;
+      letter-spacing: 0.06em;
+    }
+
+    .tag-blue  { background: var(--neon-dim);   color: var(--neon);   border: 1px solid rgba(99,179,255,0.18); }
+    .tag-purple{ background: var(--accent-dim);  color: var(--accent); border: 1px solid rgba(167,139,250,0.18); }
+    .tag-slate { background: rgba(100,116,139,0.1); color: #94a3b8; border: 1px solid rgba(100,116,139,0.15); }
+
+    .proj-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      text-decoration: none;
+      color: var(--neon);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      transition: gap 0.2s, opacity 0.2s;
+      opacity: 0.7;
+    }
+    .proj-link:hover { gap: 0.6rem; opacity: 1; }
+
+    /* ── SKILLS ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .skill-card {
+      padding: 1.6rem 1.8rem;
+    }
+
+    .skill-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--neon);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .skill-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+    .skill-pill {
+      font-size: 0.82rem;
+      color: var(--text);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.3rem 0.8rem;
+      transition: all 0.2s;
+      cursor: default;
+    }
+    .skill-pill:hover {
+      background: var(--neon-dim);
+      border-color: rgba(99,179,255,0.25);
+      color: var(--text-h);
+    }
+
+    /* ── CONTACT ── */
+    #contact {
+      text-align: center;
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .contact-sub {
+      max-width: 440px;
+      font-size: 0.93rem;
+      color: #64748b;
+      line-height: 1.85;
+      margin: 1rem auto 2.5rem;
+    }
+
+    .contact-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 2.5rem;
+    }
+
+    .contact-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.7rem 1.4rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      text-decoration: none;
+      transition: all 0.25s;
+      backdrop-filter: blur(12px);
+    }
+    .contact-pill:hover {
+      border-color: var(--border-h);
+      background: var(--neon-dim);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .cp-icon { font-size: 1rem; }
+
+    .cp-text { display: flex; flex-direction: column; align-items: flex-start; gap: 0.1rem; }
+
+    .cp-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.58rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .cp-val {
+      font-size: 0.82rem;
+      color: var(--text-h);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 1.8rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ── REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--muted); border-radius: 2px; }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 1.4rem; }
+      .nav-links { gap: 1.2rem; }
+      section { padding: 4rem 1.4rem; }
+      .about-grid { grid-template-columns: 1fr; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .hero-stats { gap: 1.5rem; flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="#hero">sp.dev</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+    </ul>
+    <a class="nav-cta" href="#contact">Contact</a>
+  </nav>
+
+  <main>
+
+    <!-- HERO -->
+    <section id="hero">
+      <div class="hero-chip">Available for opportunities</div>
+
+      <h1 class="hero-name">
+        Shubhankar<br><span class="grad">Pande</span>
+      </h1>
+
+      <p class="hero-role">Backend Engineer · Systems Engineer @ TCS</p>
+
+      <p class="hero-desc">
+        Building production-grade microservices and AI-powered tooling. Focused on system reliability, clean APIs, and the intersection of backend engineering and intelligent automation.
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn-primary" href="#projects">View Projects →</a>
+        <a class="btn-ghost" href="#contact">Get in Touch</a>
+      </div>
+
+      <!-- <div class="hero-stats">
+        <div>
+          <div class="h-stat-val">1.5+</div>
+          <div class="h-stat-label">Years Exp.</div>
+        </div>
+        <div>
+          <div class="h-stat-val">250+</div>
+          <div class="h-stat-label">DSA Solved</div>
+        </div>
+        <div>
+          <div class="h-stat-val">3</div>
+          <div class="h-stat-label">Projects</div>
+        </div>
+        <div>
+          <div class="h-stat-val">5★</div>
+          <div class="h-stat-label">Java HackerRank</div>
+        </div>
+      </div> -->
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about">
+      <div class="sec-header reveal">
+        <div class="sec-label">// 01 — About</div>
+        <h2 class="sec-title">Who I Am</h2>
+      </div>
+      <div class="about-grid">
+        <div class="card about-card reveal">
+          <p>I'm a backend-focused software engineer working at Tata Consultancy Services. My day-to-day involves building and maintaining Spring Boot microservices that handle real production traffic — which means real failure modes, real debugging, and real accountability.</p>
+          <p>Outside of work I explore AI/ML tooling. I've built a log analysis pipeline using LangChain that automatically extracts HTTP failure patterns from backend logs, and a GenAI video summarizer powered by FAISS vector search.</p>
+          <p>Graduated in Computer Science from SGGS Institute of Engineering & Technology, Nanded (CGPA: 8.25). AWS Certified Cloud Practitioner. Earned a 5-star Java rating on HackerRank.</p>
+        </div>
+        <div class="stat-grid reveal">
+          <div class="stat-cell">
+            <div class="stat-num">1.5+</div>
+            <div class="stat-lbl">Years Exp.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-num">250+</div>
+            <div class="stat-lbl">DSA Problems</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-num">8.25</div>
+            <div class="stat-lbl">CGPA</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-num">5 ★</div>
+            <div class="stat-lbl">Java Rating</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section id="experience">
+      <div class="sec-header reveal">
+        <div class="sec-label">// 02 — Experience</div>
+        <h2 class="sec-title">Where I've Worked</h2>
+      </div>
+      <div class="card exp-card reveal">
+        <div class="exp-header">
+          <div class="exp-role">Systems Engineer</div>
+          <span class="exp-badge">Nov 2024 — Present</span>
+        </div>
+        <div class="exp-company">Tata Consultancy Services</div>
+        <ul class="exp-points">
+          <li>Engineered and maintained Spring Boot microservices and REST APIs supporting multiple backend services in production environments.</li>
+          <li>Performed root cause analysis of recurring HTTP 4xx/5xx failures using structured log analysis, improving system reliability and reducing debugging time.</li>
+          <li>Improved build reliability and service stability by refining Maven and Gradle configurations during CI/CD modernization from Jenkins to GitLab.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects">
+      <div class="sec-header reveal">
+        <div class="sec-label">// 03 — Projects</div>
+        <h2 class="sec-title">Things I've Built</h2>
+      </div>
+      <div class="projects-grid">
+
+        <div class="card project-card reveal">
+          <div class="proj-top">
+            <div class="proj-icon">🔍</div>
+            <span class="proj-num">01 / 03</span>
+          </div>
+          <div class="proj-name">AI Based Log Analyzer</div>
+          <p class="proj-desc">Spring Boot payment simulator on AWS EC2 with centralized Logback logging and automated S3 log shipping. AI-assisted LangChain pipeline extracts HTTP failure patterns, root causes, and performance bottlenecks from backend logs.</p>
+          <div class="proj-tags">
+            <span class="tag tag-blue">Spring Boot</span>
+            <span class="tag tag-purple">LangChain</span>
+            <span class="tag tag-blue">AWS EC2</span>
+            <span class="tag tag-slate">S3</span>
+            <span class="tag tag-slate">JPA</span>
+          </div>
+          <a class="proj-link" href="#" target="_blank">View Project →</a>
+        </div>
+
+        <div class="card project-card reveal">
+          <div class="proj-top">
+            <div class="proj-icon">🎬</div>
+            <span class="proj-num">02 / 03</span>
+          </div>
+          <div class="proj-name">YT Video Summarizer</div>
+          <p class="proj-desc">GenAI-powered YouTube summarizer using yt-dlp for transcript extraction and LangChain LCEL pipelines. Features FAISS vector search, a Flask backend, and a browser-extension UI for in-browser summarization.</p>
+          <div class="proj-tags">
+            <span class="tag tag-purple">LangChain</span>
+            <span class="tag tag-blue">FAISS</span>
+            <span class="tag tag-slate">Flask</span>
+            <span class="tag tag-slate">JavaScript</span>
+          </div>
+          <a class="proj-link" href="#" target="_blank">View Project →</a>
+        </div>
+
+        <div class="card project-card reveal">
+          <div class="proj-top">
+            <div class="proj-icon">📚</div>
+            <span class="proj-num">03 / 03</span>
+          </div>
+          <div class="proj-name">Book-Store Application</div>
+          <p class="proj-desc">Spring Boot microservices application for managing books, authors, and publishers. Implements inter-service communication using WebClient and service discovery with Netflix Eureka for a resilient distributed architecture.</p>
+          <div class="proj-tags">
+            <span class="tag tag-blue">Spring Boot</span>
+            <span class="tag tag-slate">Hibernate</span>
+            <span class="tag tag-slate">MySQL</span>
+            <span class="tag tag-purple">Netflix Eureka</span>
+          </div>
+          <a class="proj-link" href="#" target="_blank">View Project →</a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills">
+      <div class="sec-header reveal">
+        <div class="sec-label">// 04 — Skills</div>
+        <h2 class="sec-title">Tech Stack</h2>
+      </div>
+      <div class="skills-grid">
+        <div class="card skill-card reveal">
+          <div class="skill-title">Languages</div>
+          <div class="skill-pills">
+            <span class="skill-pill">Java</span>
+            <span class="skill-pill">Python</span>
+            <span class="skill-pill">SQL</span>
+          </div>
+        </div>
+        <div class="card skill-card reveal">
+          <div class="skill-title">Backend</div>
+          <div class="skill-pills">
+            <span class="skill-pill">Spring Boot</span>
+            <span class="skill-pill">REST APIs</span>
+            <span class="skill-pill">JPA</span>
+            <span class="skill-pill">Hibernate</span>
+            <span class="skill-pill">WebClient</span>
+          </div>
+        </div>
+        <div class="card skill-card reveal">
+          <div class="skill-title">Cloud & DevOps</div>
+          <div class="skill-pills">
+            <span class="skill-pill">AWS EC2</span>
+            <span class="skill-pill">AWS S3</span>
+            <span class="skill-pill">GitLab CI/CD</span>
+            <span class="skill-pill">Maven</span>
+            <span class="skill-pill">Gradle</span>
+          </div>
+        </div>
+        <div class="card skill-card reveal">
+          <div class="skill-title">AI / ML</div>
+          <div class="skill-pills">
+            <span class="skill-pill">LangChain</span>
+            <span class="skill-pill">FAISS</span>
+            <span class="skill-pill">LCEL</span>
+          </div>
+        </div>
+        <div class="card skill-card reveal">
+          <div class="skill-title">Tools</div>
+          <div class="skill-pills">
+            <span class="skill-pill">Git</span>
+            <span class="skill-pill">Postman</span>
+            <span class="skill-pill">Logback</span>
+            <span class="skill-pill">Netflix Eureka</span>
+            <span class="skill-pill">Flask</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact">
+      <div class="reveal">
+        <div class="sec-label" style="text-align:center;display:block;">// 05 — Contact</div>
+        <h2 class="sec-title" style="text-align:center;">Let's Connect</h2>
+        <p class="contact-sub">Open to backend engineering roles, AI/ML collaborations, and conversations about distributed systems. I respond to every message.</p>
+        <div style="display:flex;justify-content:center;gap:0.85rem;flex-wrap:wrap;">
+          <a class="btn-primary" href="mailto:shubhankarpande200@gmail.com">Send an Email →</a>
+          <a class="btn-ghost" href="https://linkedin.com" target="_blank">LinkedIn</a>
+        </div>
+        <div class="contact-links">
+          <a class="contact-pill" href="https://github.com" target="_blank">
+            <span class="cp-icon">🐙</span>
+            <div class="cp-text">
+              <span class="cp-label">GitHub</span>
+              <span class="cp-val">@Shubhankar812</span>
+            </div>
+          </a>
+         
+         
+          <a class="contact-pill" href="tel:+919579562087">
+            <span class="cp-icon">📱</span>
+            <div class="cp-text">
+              <span class="cp-label">Phone</span>
+              <span class="cp-val">+91 95795 62087</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>Designed & built by Shubhankar Pande · 2025</footer>
+
+  <script>
+    // Scroll reveal
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 80);
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+    // Project card mouse glow
+    document.querySelectorAll('.project-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+        card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      });
+    });
+
+    // Active nav highlight
+    const sections = document.querySelectorAll('section[id]');
+    const navAs = document.querySelectorAll('.nav-links a');
+    window.addEventListener('scroll', () => {
+      let cur = '';
+      sections.forEach(s => { if (window.scrollY >= s.offsetTop - 200) cur = s.id; });
+      navAs.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + cur);
+      });
+    }, { passive: true });
+  </script>
+</body>
+</html>
